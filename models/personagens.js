@@ -9,6 +9,10 @@ const personagemSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  descricao:{
+    type: String,
+    required: true
+  },
   fruta: {
     type: mongoose.SchemaTypes.Number,
     ref: 'Frutas',

@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const personagemRoutes = require('./routes/personagens');
 const routes = require('./routes/routes');
 const frutaRoutes = require('./routes/frutas');
+const ilhasRoutes = require('./routes/ilhas');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -28,6 +29,7 @@ mongoose
 app.use('/v1/personagens', personagemRoutes);
 app.use('/v1', routes);
 app.use('/v1/frutas', frutaRoutes);
+app.use('/v1/ilhas', ilhasRoutes);
 
 // Inicialização do Servidor
 const PORT = process.env.PORT || 3000;

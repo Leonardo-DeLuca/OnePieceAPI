@@ -7,5 +7,6 @@ const counterSchema = new mongoose.Schema({
 
 const CounterPersonagens = mongoose.model('CounterPersonagens', counterSchema);
 const CounterFrutas = mongoose.model('CounterFrutas', counterSchema);
+const CounterIlhas = mongoose.model('CounterIlhas', counterSchema);
 
-module.exports = {CounterPersonagens, CounterFrutas} ;
+module.exports = {CounterPersonagens, CounterFrutas, CounterIlhas} ;

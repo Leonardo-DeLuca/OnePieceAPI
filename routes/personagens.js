@@ -16,7 +16,7 @@ async function getNextId() {
 
 // Rota para criar um novo personagem (POST)
 router.post('/', async (req, res) => {
-  let { nome, apelido, fruta, afiliacao, origem, status, idade, ocupacao, aniversario, altura } = req.body;
+  let { nome, apelido, fruta, afiliacao, origem, status, idade, ocupacao, aniversario, altura, descricao } = req.body;
   
   try {
     if(!afiliacao || afiliacao === ""){
@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
 
     const novoId = await getNextId();
 
-    const novoPersonagem = new Personagem({ _id: novoId, nome, apelido, fruta, afiliacao, origem, status, idade, ocupacao, aniversario, altura });
+    const novoPersonagem = new Personagem({ _id: novoId, nome, apelido, fruta, afiliacao, origem, status, idade, ocupacao, aniversario, altura, descricao });
     await novoPersonagem.save();
     res.status(201).json(novoPersonagem);
   } catch (err) {
@@ -80,12 +80,12 @@ router.get('/:param', async (req, res) => {
 // Rota para atualizar um personagem (PUT)
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { nome, apelido, fruta, afiliacao, origem, status, idade, ocupacao, aniversario, altura } = req.body;
+  const { nome, apelido, fruta, afiliacao, origem, status, idade, ocupacao, aniversario, altura, descricao } = req.body;
 
   try {
     const personagemAtualizado = await Personagem.findByIdAndUpdate(
       id,
-      { nome, apelido, fruta, afiliacao, origem, status, idade, ocupacao, aniversario, altura },
+      { nome, apelido, fruta, afiliacao, origem, status, idade, ocupacao, aniversario, altura, descricao },
       { new: true }
     );
     if (!personagemAtualizado) {
@@ -124,7 +124,8 @@ router.delete('/:id', async (req, res) => {
         ocupacao: personagem.ocupacao,
         aniversario: personagem.aniversario,
         altura: personagem.altura,
-        status: personagem.status
+        status: personagem.status,
+        descricao: personagem.descricao
       });
 
       await novoPersonagem.save();

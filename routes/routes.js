@@ -1,6 +1,7 @@
 const express = require('express');
 const Personagem = require('../models/personagens');
 const Fruta = require('../models/frutas');
+const Ilha = require('../models/ilhas');
 const { default: mongoose } = require('mongoose');
 
 const router = express.Router();
@@ -73,10 +74,6 @@ router.get('/buscar', async (req, res) => {
       },
     ]);
     
-    if (personagens.length > 0) {
-      results.push({ collection: 'personagens', data: personagens });
-    }
-    
     const frutasResults = await Fruta.aggregate([
       {
         $search: {
@@ -90,8 +87,29 @@ router.get('/buscar', async (req, res) => {
       { $limit: 10 },
     ]);
 
+    const ilhasResult = await Ilha.aggregate([
+      {
+        $search: {
+          index: 'ilhasIndex',
+          text: {
+            query: searchTerm,
+            path: ['nome', 'regiao', 'afiliada'],
+          },
+        },
+      },
+      { $limit: 10 },
+    ]);
+
+    if (personagens.length > 0) {
+      results.push({ collection: 'personagens', data: personagens });
+    }
+
     if (frutasResults.length > 0) {
       results.push({ collection: 'frutas', data: frutasResults });
+    }
+
+    if (ilhasResult.length > 0) {
+      results.push({ collection: 'ilhas', data: ilhasResult });
     }
     
 
