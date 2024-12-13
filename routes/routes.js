@@ -1,5 +1,6 @@
 const express = require('express');
-const Personagem = require('../models/personagens')
+const Personagem = require('../models/personagens');
+const Fruta = require('../models/frutas');
 const { default: mongoose } = require('mongoose');
 
 const router = express.Router();
@@ -45,5 +46,63 @@ router.get('/', async (req, res) => {
       res.status(500).json({ message: 'Erro ao buscar dados de todas as coleções', error: err });
     }
   });
+
+router.get('/buscar', async (req, res) => {
+  const { searchTerm } = req.query;
+
+  
+  if (!searchTerm) {
+    return res.status(400).json({ message: 'O termo de pesquisa é obrigatório.' });
+  }
+  
+  try {
+    let results = [];
+    
+    const personagens = await Personagem.aggregate([
+      {
+        $search: {
+          index: 'personagensIndex',
+          text: {
+            query: searchTerm,
+            path: ['nome', 'apelido', 'ocupacao', 'afiliacao'],
+          },
+        },
+      },
+      {
+        $limit: 20, // Limitar o número de resultados
+      },
+    ]);
+    
+    if (personagens.length > 0) {
+      results.push({ collection: 'personagens', data: personagens });
+    }
+    
+    const frutasResults = await Fruta.aggregate([
+      {
+        $search: {
+          index: 'frutasIndex',
+          text: {
+            query: searchTerm,
+            path: ['nome', 'tipo', 'descricao', 'significado'],
+          },
+        },
+      },
+      { $limit: 10 },
+    ]);
+
+    if (frutasResults.length > 0) {
+      results.push({ collection: 'frutas', data: frutasResults });
+    }
+    
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Nenhum resultado encontrado.' });
+    }
+
+    res.status(200).json(results);
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao buscar', error: err });
+  }
+});
 
 module.exports = router;
