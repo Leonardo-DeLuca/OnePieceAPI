@@ -1,5 +1,5 @@
 // middleware/checkIp.js
-const allowedIp = '177.54.58.34';  // Defina o IP permitido para as rotas POST, PUT, DELETE
+const allowedIp = process.env.ALLOWED_IP  // Defina o IP permitido para as rotas POST, PUT, DELETE
 
 // Middleware para verificar o IP da requisição
 const checkIp = (req, res, next) => {
