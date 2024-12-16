@@ -5,6 +5,8 @@ const allowedIp = '::1';  // Defina o IP permitido para as rotas POST, PUT, DELE
 const checkIp = (req, res, next) => {
   const clientIp = req.ip;  // O IP do cliente
 
+  console.log(clientIp)
+
   if (clientIp === allowedIp) {
     return next();  // Se o IP for permitido, prossiga com a requisição
   } else {

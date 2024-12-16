@@ -4,12 +4,10 @@ info:
   description: API em português da obra One Piece de Eiichiro Oda.
   version: 0.0.2
 servers:
-  - url: http://{local}:{port}/v1
+  - url: https://{local}/v1
     variables:
       local:
-        default: localhost
-      port:
-        default: '3000'
+        default: onepieceapi-b0ri.onrender.com
     description: Máquina Local
 paths:
   /:
@@ -361,6 +359,7 @@ components:
         required:
             - nome
             - apelido
+            - descricao
         example:
             nome: Monkey D. Luffy
             apelido: Nika
@@ -383,6 +382,7 @@ components:
             aniversario: Dia 5 de Maio
             altura:
             - 174cm (5'9") (Pós time skip)
+            descricao: Personagem principal
     Fruta:
         type: object
         properties:

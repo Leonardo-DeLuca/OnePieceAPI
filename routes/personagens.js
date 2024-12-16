@@ -19,6 +19,12 @@ router.post('/', async (req, res) => {
   let { nome, apelido, fruta, afiliacao, origem, status, idade, ocupacao, aniversario, altura, descricao } = req.body;
   
   try {
+    const countQuery = await Personagem.where({nome: nome}).countDocuments()
+
+    if(countQuery > 0){
+      return res.status(409).json({ message: 'Personagem com esse nome já existe'});
+    }
+
     if(!afiliacao || afiliacao === ""){
       afiliacao = "undefined"
     }
