@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: One Piece API
   description: API em português da obra One Piece de Eiichiro Oda.
-  version: 0.0.2
+  version: 0.0.3
 servers:
   - url: https://{local}/v1
     variables:

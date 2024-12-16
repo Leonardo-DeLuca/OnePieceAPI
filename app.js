@@ -16,7 +16,7 @@ const app = express();
 
 const swaggerDocument = yaml.parse(fs.readFileSync('./api.yaml', 'utf-8'));
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(bodyParser.json());
 app.use(cors());
 app.set('trust proxy', true);
