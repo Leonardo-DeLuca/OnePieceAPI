@@ -40,6 +40,11 @@ mongoose
     }
   });
 
+  app.get('/', function (req, res) {
+    console.log(req.ip);
+    res.send();
+});
+
 app.use('/v1/personagens', personagemRoutes);
 app.use('/v1', routes);
 app.use('/v1/frutas', frutaRoutes);
