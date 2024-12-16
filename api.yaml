@@ -2,16 +2,16 @@ openapi: 3.0.0
 info:
   title: One Piece API
   description: API em português da obra One Piece de Eiichiro Oda.
-  version: 0.0.3
+  version: 0.0.4
 servers:
-  - url: http://{local}:{port}/v1
+  - url: 'http://{local}:{port}/v1'
     variables:
       local:
         default: localhost
       port:
         default: '3000'
     description: Máquina Local
-  - url: https://{local}/v1
+  - url: 'https://{local}/v1'
     variables:
       local:
         default: onepieceapi-b0ri.onrender.com
@@ -23,7 +23,7 @@ paths:
       operationId: getAll
       summary: Retorna uma lista de todas as collections e seus dados.
       responses:
-        "200": # status code
+        '200':
           description: JSON list de todos os dados.
           content:
             application/json:
@@ -31,7 +31,7 @@ paths:
                 type: array
                 items:
                   type: object
-        "500": # status code
+        '500':
           description: Erro ao buscar dados.
           content:
             application/json:
@@ -49,52 +49,48 @@ paths:
       operationId: searchTerm
       summary: Retorna uma lista de itensrelacionados com o termo buscado
       responses:
-        "200": # status code
+        '200':
           description: JSON list da busca.
           content:
             application/json:
               schema:
-                  type: array
-                  items:
-                      type: object
-        "500": # status code
-          description: Erro ao buscar dados.
-          content:
-            application/json:
-              schema:
-                type: string
-        "404": # status code
+                type: array
+                items:
+                  type: object
+        '404':
           description: Nenhum dado encontrado.
           content:
             application/json:
               schema:
                 type: string
-              
+        '500':
+          description: Erro ao buscar dados.
+          content:
+            application/json:
+              schema:
+                type: string
   /personagens:
     get:
       security: []
       operationId: getPersonagens
-      tags: 
+      tags:
         - personagens
       summary: Retorna uma lista de todos personagens.
       description: Personagens cadastrados.
       responses:
-        "200": # status code
+        '200':
           description: Um JSON array dos personagens.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Personagem"
+                  $ref: '#/components/schemas/Personagem'
                 example:
-                    [
-                        Personagem: {},
-                        Personagem: {},
-                        ...
-                    ]
-
-        "500": # status code
+                  - Personagem: {}
+                  - Personagem: {}
+                  - ...
+        '500':
           description: Erro ao buscar personagens.
           content:
             application/json:
@@ -104,45 +100,48 @@ paths:
       security:
         - apiKeyAuth: []
       operationId: addPersonagem
-      tags: 
+      tags:
         - personagens
       summary: Adiciona um novo personagem
       requestBody:
-          description: Deve ser enviado um personagem. A fruta inserida deve constar na tabela frutas cadastradas e deve ser com o mesmo nome. Id não deve ser inserido
-          required: true
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/Personagem"
-                  - example: 
-                      fruta: Hito Hito No Mi (Modelo Nika)
-                      
-      responses:        
-          "201": # status code
-              description: Personagem adicionado com sucesso.
-
-          "500": # status code
-              description: Erro ao adicionar personagem.
-          "403":
-              description: Chave da API faltante ou inválida.
-  /personagens/{identificador}:
+        description: >-
+          Deve ser enviado um personagem. A fruta inserida deve constar na
+          tabela frutas cadastradas e deve ser com o mesmo nome. Id não deve ser
+          inserido
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Personagem'
+                - example:
+                    fruta: Hito Hito No Mi (Modelo Nika)
+      responses:
+        '201':
+          description: Personagem adicionado com sucesso.
+        '403':
+          description: Chave da API faltante ou inválida.
+        '500':
+          description: Erro ao adicionar personagem.
+  '/personagens/{identificador}':
     parameters:
-        - name: identificador
-          in: path
-          description: identificador único do personagem.
-          required: true
-          schema:
-            type: string
+      - name: identificador
+        in: path
+        description: identificador único do personagem.
+        required: true
+        schema:
+          type: string
     get:
       security: []
       operationId: getPersonagensByIdentificator
-      tags: 
-            - personagens
+      tags:
+        - personagens
       summary: Retorna o personagem pelo identificador (Id ou Apelido único).
-      description: Retorna um personagem por um identificador podendo ser um id (1, 12, 47, ...) ou apelido (Luffy, Nami, ...).
+      description: >-
+        Retorna um personagem por um identificador podendo ser um id (1, 12, 47,
+        ...) ou apelido (Luffy, Nami, ...).
       responses:
-        "200": # status code
+        '200':
           description: Um JSON array dos personagens.
           content:
             application/json:
@@ -151,15 +150,14 @@ paths:
                   - $ref: '#/components/schemas/Personagem'
                   - example:
                       _id: 1
-        "500": # status code
-          description: Erro ao buscar personagens.
+        '404':
+          description: Personagem não encontrado.
           content:
             application/json:
               schema:
                 type: string
-
-        "404": # status code
-          description: Personagem não encontrado.
+        '500':
+          description: Erro ao buscar personagens.
           content:
             application/json:
               schema:
@@ -168,111 +166,109 @@ paths:
       security:
         - apiKeyAuth: []
       operationId: deletePersonagensById
-      tags: 
-            - personagens
+      tags:
+        - personagens
       summary: Deleta o personagem pelo id.
-      description: Exclui o personagem pelo id e reorganiza os ids subsequentes. Apenas Ids numéricos.
+      description: >-
+        Exclui o personagem pelo id e reorganiza os ids subsequentes. Apenas Ids
+        numéricos.
       responses:
-        "200": # status code
+        '200':
           description: Personagem deletado e IDs subsequentes atualizados.
           content:
             application/json:
               schema:
                 type: string
-        "404": # status code
+        '403':
+          description: Chave da API faltante ou inválida.
+        '404':
           description: Personagem não encontrado.
           content:
             application/json:
               schema:
                 type: string
-        "500": # status code
+        '500':
           description: Erro ao deletar personagem e atualizar IDs.
           content:
             application/json:
               schema:
                 type: string
-        "403":
-              description: Chave da API faltante ou inválida.
     put:
-        security:
-            - apiKeyAuth: []
-        operationId: atualizaPersonagem
-        tags: 
-            - personagens
-        summary: Atualizar um personagem
-        requestBody:
-          description: Atualiza um personagem a partir do id.
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Personagem"
-        responses:        
-            "200": # status code
-                description: Personagem atualizado com sucesso.
-
-            "500": # status code
-                description: Erro ao atualizar o personagem.
-
-            "404": # status code
-                description: Personagem não encontrado.
-
-            "403":
-              description: Chave da API faltante ou inválida.
+      security:
+        - apiKeyAuth: []
+      operationId: atualizaPersonagem
+      tags:
+        - personagens
+      summary: Atualizar um personagem
+      requestBody:
+        description: Atualiza um personagem a partir do id.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Personagem'
+      responses:
+        '200':
+          description: Personagem atualizado com sucesso.
+        '403':
+          description: Chave da API faltante ou inválida.
+        '404':
+          description: Personagem não encontrado.
+        '500':
+          description: Erro ao atualizar o personagem.
   /frutas:
     get:
-        security: []
-        operationId: getFrutas
-        tags: 
-            - frutas
-        summary: Retorna uma lista de todas as frutas.
-        description: Lista de todas as frutas disponíveis.
-        responses:
-            "200": # status code
-                description: Uma lista com todas as frutas.
-
-            "500": # status code
-                description: Erro ao buscar frutas.
+      security: []
+      operationId: getFrutas
+      tags:
+        - frutas
+      summary: Retorna uma lista de todas as frutas.
+      description: Lista de todas as frutas disponíveis.
+      responses:
+        '200':
+          description: Uma lista com todas as frutas.
+        '500':
+          description: Erro ao buscar frutas.
     post:
-        security:
-            - apiKeyAuth: []
-        operationId: addFrutas
-        tags: 
-            - frutas
-        summary: Adiciona uma nova fruta.
-        requestBody:
-            description: Deve ser enviado um modelo de fruta. Id não deve ser inserido.
-            required: true
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/Fruta"
-                        
-        responses:        
-            "201": # status code
-                description: Fruta adicionada com sucesso.
-
-            "500": # status code
-                description: Erro ao adicionar fruta.
-            "403":
-              description: Chave da API faltante ou inválida.
-  /frutas/{identificador}:
+      security:
+        - apiKeyAuth: []
+      operationId: addFrutas
+      tags:
+        - frutas
+      summary: Adiciona uma nova fruta.
+      requestBody:
+        description: Deve ser enviado um modelo de fruta. Id não deve ser inserido.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fruta'
+      responses:
+        '201':
+          description: Fruta adicionada com sucesso.
+        '403':
+          description: Chave da API faltante ou inválida.
+        '500':
+          description: Erro ao adicionar fruta.
+  '/frutas/{identificador}':
     parameters:
-        - name: identificador
-          in: path
-          description: identificador único da fruta.
-          required: true
-          schema:
-            type: string
+      - name: identificador
+        in: path
+        description: identificador único da fruta.
+        required: true
+        schema:
+          type: string
     get:
       security: []
       operationId: getFrutaByIdentificator
-      tags: 
-            - frutas
+      tags:
+        - frutas
       summary: Retorna a fruta pelo identificador (Id ou Nome único).
-      description: Retorna uma fruta por um identificador podendo ser um id (1, 12, 47, ...) ou Nome (Hito Hito No Mi, ...).
+      description: >-
+        Retorna uma fruta por um identificador podendo ser um id (1, 12, 47,
+        ...) ou Nome (Hito Hito No Mi, ...).
       responses:
-        "200": # status code
+        '200':
           description: Fruta retornada com sucesso.
           content:
             application/json:
@@ -281,14 +277,14 @@ paths:
                   - $ref: '#/components/schemas/Fruta'
                   - example:
                       _id: 1
-        "500": # status code
-          description: Erro ao buscar fruta.
+        '404':
+          description: Fruta não encontrada.
           content:
             application/json:
               schema:
                 type: string
-        "404": # status code
-          description: Fruta não encontrada.
+        '500':
+          description: Erro ao buscar fruta.
           content:
             application/json:
               schema:
@@ -297,111 +293,109 @@ paths:
       security:
         - apiKeyAuth: []
       operationId: deleteFrutaById
-      tags: 
-            - frutas
+      tags:
+        - frutas
       summary: Deleta a fruta pelo id.
-      description: Exclui a fruta pelo id e reorganiza os ids subsequentes. Apenas Ids numéricos.
+      description: >-
+        Exclui a fruta pelo id e reorganiza os ids subsequentes. Apenas Ids
+        numéricos.
       responses:
-        "200": # status code
+        '200':
           description: Fruta deletada e IDs subsequentes atualizados.
           content:
             application/json:
               schema:
                 type: string
-        "404": # status code
+        '403':
+          description: Chave da API faltante ou inválida.
+        '404':
           description: Fruta não encontrada.
           content:
             application/json:
               schema:
                 type: string
-        "500": # status code
+        '500':
           description: Erro ao deletar fruta e atualizar IDs.
           content:
             application/json:
               schema:
                 type: string
-        "403":
-              description: Chave da API faltante ou inválida.
     put:
-        security:
+      security:
         - apiKeyAuth: []
-        operationId: atualizaFruta
-        tags: 
-            - frutas
-        summary: Atualizar uma fruta.
-        requestBody:
-          description: Atualiza uma fruta a partir do id.
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Fruta"
-        responses:        
-            "200": # status code
-                description: Fruta atualizada com sucesso.
-
-            "500": # status code
-                description: Erro ao atualizar a fruta.
-
-            "404": # status code
-                description: Fruta não encontrada.
-
-            "403":
-              description: Chave da API faltante ou inválida.
+      operationId: atualizaFruta
+      tags:
+        - frutas
+      summary: Atualizar uma fruta.
+      requestBody:
+        description: Atualiza uma fruta a partir do id.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fruta'
+      responses:
+        '200':
+          description: Fruta atualizada com sucesso.
+        '403':
+          description: Chave da API faltante ou inválida.
+        '404':
+          description: Fruta não encontrada.
+        '500':
+          description: Erro ao atualizar a fruta.
   /ilhas:
     get:
-        security: []
-        operationId: getIlhas
-        tags: 
-            - ilhas
-        summary: Retorna uma lista de todas as ilhas.
-        description: Lista de todas as ilhas disponíveis.
-        responses:
-            "200": # status code
-                description: Uma lista com todas as ilhas.
-
-            "500": # status code
-                description: Erro ao buscar ilhas.
+      security: []
+      operationId: getIlhas
+      tags:
+        - ilhas
+      summary: Retorna uma lista de todas as ilhas.
+      description: Lista de todas as ilhas disponíveis.
+      responses:
+        '200':
+          description: Uma lista com todas as ilhas.
+        '500':
+          description: Erro ao buscar ilhas.
     post:
-        security:
-            - apiKeyAuth: []
-        operationId: addIlhas
-        tags: 
-            - ilhas
-        summary: Adiciona uma nova ilha.
-        requestBody:
-            description: Deve ser enviado um modelo de ilha. Id não deve ser inserido.
-            required: true
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/Ilha"
-                        
-        responses:        
-            "201": # status code
-                description: Ilha adicionada com sucesso.
-
-            "500": # status code
-                description: Erro ao adicionar ilha.
-            "403":
-                description: Chave da API faltante ou inválida.
-  /ilhas/{identificador}:
+      security:
+        - apiKeyAuth: []
+      operationId: addIlhas
+      tags:
+        - ilhas
+      summary: Adiciona uma nova ilha.
+      requestBody:
+        description: Deve ser enviado um modelo de ilha. Id não deve ser inserido.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ilha'
+      responses:
+        '201':
+          description: Ilha adicionada com sucesso.
+        '403':
+          description: Chave da API faltante ou inválida.
+        '500':
+          description: Erro ao adicionar ilha.
+  '/ilhas/{identificador}':
     parameters:
-        - name: identificador
-          in: path
-          description: identificador único da ilha.
-          required: true
-          schema:
-            type: string
+      - name: identificador
+        in: path
+        description: identificador único da ilha.
+        required: true
+        schema:
+          type: string
     get:
       security: []
       operationId: getIlhaByIdentificator
-      tags: 
-            - ilhas
+      tags:
+        - ilhas
       summary: Retorna a ilha pelo identificador (Id ou Nome único).
-      description: Retorna uma ilha por um identificador podendo ser um id (1, 12, 47, ...) ou Nome (Hito Hito No Mi, ...).
+      description: >-
+        Retorna uma ilha por um identificador podendo ser um id (1, 12, 47, ...)
+        ou Nome (Hito Hito No Mi, ...).
       responses:
-        "200": # status code
+        '200':
           description: Ilha retornada com sucesso.
           content:
             application/json:
@@ -410,14 +404,14 @@ paths:
                   - $ref: '#/components/schemas/Ilha'
                   - example:
                       _id: 1
-        "500": # status code
-          description: Erro ao buscar ilha.
+        '404':
+          description: Ilha não encontrada.
           content:
             application/json:
               schema:
                 type: string
-        "404": # status code
-          description: Ilha não encontrada.
+        '500':
+          description: Erro ao buscar ilha.
           content:
             application/json:
               schema:
@@ -426,198 +420,196 @@ paths:
       security:
         - apiKeyAuth: []
       operationId: deleteIlhaById
-      tags: 
-            - ilhas
+      tags:
+        - ilhas
       summary: Deleta a ilha pelo id.
-      description: Exclui a ilha pelo id e reorganiza os ids subsequentes. Apenas Ids numéricos.
+      description: >-
+        Exclui a ilha pelo id e reorganiza os ids subsequentes. Apenas Ids
+        numéricos.
       responses:
-        "200": # status code
+        '200':
           description: Ilha deletada e IDs subsequentes atualizados.
           content:
             application/json:
               schema:
                 type: string
-        "404": # status code
+        '403':
+          description: Chave da API faltante ou inválida.
+        '404':
           description: Ilha não encontrada.
           content:
             application/json:
               schema:
                 type: string
-        "500": # status code
+        '500':
           description: Erro ao deletar ilha e atualizar IDs.
           content:
             application/json:
               schema:
-                type: string 
-        "403":
-              description: Chave da API faltante ou inválida.
+                type: string
     put:
-        security:
-            - apiKeyAuth: []
-        operationId: atualizaIlha
-        tags: 
-            - ilhas
-        summary: Atualizar uma ilha.
-        requestBody:
-          description: Atualiza uma ilha a partir do id.
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Ilha"
-        responses:        
-            "200": # status code
-                description: Ilha atualizada com sucesso.
-
-            "500": # status code
-                description: Erro ao atualizar a ilha.
-
-            "404": # status code
-                description: Ilha não encontrada.
-
-            "403":
-                description: Chave da API faltante ou inválida.
+      security:
+        - apiKeyAuth: []
+      operationId: atualizaIlha
+      tags:
+        - ilhas
+      summary: Atualizar uma ilha.
+      requestBody:
+        description: Atualiza uma ilha a partir do id.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ilha'
+      responses:
+        '200':
+          description: Ilha atualizada com sucesso.
+        '403':
+          description: Chave da API faltante ou inválida.
+        '404':
+          description: Ilha não encontrada.
+        '500':
+          description: Erro ao atualizar a ilha.
 components:
   securitySchemes:
-    apiKeyAuth: # <-- arbitrary name for the security scheme
-      type: apiKey 
+    apiKeyAuth:
+      type: apiKey
       in: header
       name: x-api-key
   schemas:
     Personagem:
-        type: object
-        properties:
-          nome:
+      type: object
+      properties:
+        nome:
+          type: string
+          description: Nome do personagem.
+        apelido:
+          type: string
+          description: Apelido do personagem.
+        fruta:
+          type: integer
+          description: ID da fruta do personagem (referencia à coleção 'Frutas').
+        afiliacao:
+          type: array
+          items:
             type: string
-            description: Nome do personagem.
-          apelido:
+          description: Lista de afiliações do personagem.
+        origem:
+          type: string
+          description: Origem do personagem.
+        status:
+          type: string
+          description: 'Status do personagem (ativo, morto, etc.).'
+        idade:
+          type: array
+          items:
             type: string
-            description: Apelido do personagem.
-          fruta:
-            type: integer
-            description: ID da fruta do personagem (referencia à coleção 'Frutas').
-          afiliacao:
-            type: array
-            items:
-              type: string
-            description: Lista de afiliações do personagem.
-          origem:
+          description: Lista de idades ou idades aproximadas.
+        ocupacao:
+          type: array
+          items:
             type: string
-            description: Origem do personagem.
-          status:
+          description: Lista de ocupações do personagem.
+        aniversario:
+          type: string
+          description: Data de aniversário do personagem.
+        altura:
+          type: array
+          items:
             type: string
-            description: Status do personagem (ativo, morto, etc.).
-          idade:
-            type: array
-            items:
-              type: string
-            description: Lista de idades ou idades aproximadas.
-          ocupacao:
-            type: array
-            items:
-              type: string
-            description: Lista de ocupações do personagem.
-          aniversario:
-            type: string
-            description: Data de aniversário do personagem.
-          altura:
-            type: array
-            items:
-              type: string
-            description: Lista de alturas do personagem.
-          _id:
-            type: integer
-            description: ID único do personagem.
-        required:
-            - nome
-            - apelido
-            - descricao
-        example:
-            nome: Monkey D. Luffy
-            apelido: Nika
-            fruta:
-                _id: 1
-                nome: Hito Hito No Mi (Modelo Nika)
-                significado: Fruta do humano (deus sol)
-                tipo: Zoan Mítica
-                descricao: Poderes de borracha sol kkkk
-            afiliacao:
-            - Straw Hat Pirates
-            origem: East Blue
-            status: Vivo
-            idade:
-            - 7 (Criança)
-            - 17 (Pré time skip
-            - 19 (Pós time skip)
-            ocupacao:
-            - Capitão
-            aniversario: Dia 5 de Maio
-            altura:
-            - 174cm (5'9") (Pós time skip)
-            descricao: Personagem principal
+          description: Lista de alturas do personagem.
+        _id:
+          type: integer
+          description: ID único do personagem.
+      required:
+        - nome
+        - apelido
+        - descricao
+      example:
+        nome: Monkey D. Luffy
+        apelido: Nika
+        fruta:
+          _id: 1
+          nome: Hito Hito No Mi (Modelo Nika)
+          significado: Fruta do humano (deus sol)
+          tipo: Zoan Mítica
+          descricao: Poderes de borracha sol kkkk
+        afiliacao:
+          - Straw Hat Pirates
+        origem: East Blue
+        status: Vivo
+        idade:
+          - 7 (Criança)
+          - 17 (Pré time skip
+          - 19 (Pós time skip)
+        ocupacao:
+          - Capitão
+        aniversario: Dia 5 de Maio
+        altura:
+          - 174cm (5'9") (Pós time skip)
+        descricao: Personagem principal
     Fruta:
-        type: object
-        properties:
-            nome:
-                type: string
-                description: Nome da fruta.
-            significado:
-                type: string
-                description: Significado do nome da fruta.
-            descricao:
-                type: string
-                description: Descrção da fruta.
-            tipo:
-                type: string
-                description: Tipo da fruta.
-            _id:
-                type: integer
-                description: ID único do personagem.
-        required:
-            - nome
-            - descricao
-            - significado
-            - tipo
-        example:
-            nome: Hito Hito No Mi (Modelo Nika)
-            significado: Fruta do humano (deus sol)
-            tipo: Zoan Mítica
-            descricao: Poderes de borracha sol kkkk
+      type: object
+      properties:
+        nome:
+          type: string
+          description: Nome da fruta.
+        significado:
+          type: string
+          description: Significado do nome da fruta.
+        descricao:
+          type: string
+          description: Descrção da fruta.
+        tipo:
+          type: string
+          description: Tipo da fruta.
+        _id:
+          type: integer
+          description: ID único do personagem.
+      required:
+        - nome
+        - descricao
+        - significado
+        - tipo
+      example:
+        nome: Hito Hito No Mi (Modelo Nika)
+        significado: Fruta do humano (deus sol)
+        tipo: Zoan Mítica
+        descricao: Poderes de borracha sol kkkk
     Ilha:
-        type: object
-        properties:
-            nome:
-                type: string
-                description: Nome da ilha.
-            regiao:
-                type: string
-                description: Localização da ilha.
-            descricao:
-                type: string
-                description: Descrção da ilha.
-            afiliada:
-                type: array
-                items:
-                  type: string
-                  description: Lista de afiliações.
-            populacao:
-                type: string
-                description: População da ilha.
-            _id:
-                type: integer
-                description: ID único do personagem.
-        required:
-            - nome
-            - regiao
-            - descricao
-        example:
-            nome: Fish Man Island
-            regiao: Grand Line
-            descricao: Ilha submersa dos homens peixe.
-            afiliada:
-              - Big mom pirates (old)
-              - Straw hat pirates
-            populacao: '100000'
+      type: object
+      properties:
+        nome:
+          type: string
+          description: Nome da ilha.
+        regiao:
+          type: string
+          description: Localização da ilha.
+        descricao:
+          type: string
+          description: Descrção da ilha.
+        afiliada:
+          type: array
+          items:
+            type: string
+            description: Lista de afiliações.
+        populacao:
+          type: string
+          description: População da ilha.
+        _id:
+          type: integer
+          description: ID único do personagem.
+      required:
+        - nome
+        - regiao
+        - descricao
+      example:
+        nome: Fish Man Island
+        regiao: Grand Line
+        descricao: Ilha submersa dos homens peixe.
+        afiliada:
+          - Big mom pirates (old)
+          - Straw hat pirates
+        populacao: '100000'
 security:
   - apiKeyAuth: []
-
