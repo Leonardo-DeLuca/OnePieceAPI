@@ -9,14 +9,15 @@ const cors = require('cors');
 const swaggerUi = require('swagger-ui-express')
 const fs = require('fs');
 const yaml = require('yaml');
-const checkIp = require('./routes/checkIp')
+const checkIp = require('./middlewares/checkIp')
+const authenticateApiKey = require('./middlewares/authenticateApiKey')
 require('dotenv').config();
 
 const app = express();
 
 const swaggerDocument = yaml.parse(fs.readFileSync('./api.yaml', 'utf-8'));
 
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(bodyParser.json());
 app.use(cors());
 app.set('trust proxy', true);
@@ -36,10 +37,16 @@ mongoose
   app.use((req, res, next) => {
     if (req.method === 'GET') {
       return next();
-    } else {
-      checkIp(req, res, next);
     }
+    authenticateApiKey(req, res, (err) => {
+      if (err) return;
+      checkIp(req, res, next);
+    });
   });
+
+app.get('/', (req, res) => {
+  res.redirect('/api-docs');
+});
 
 app.use('/v1/personagens', personagemRoutes);
 app.use('/v1', routes);
