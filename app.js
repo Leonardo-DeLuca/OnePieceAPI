@@ -19,6 +19,7 @@ const swaggerDocument = yaml.parse(fs.readFileSync('./api.yaml', 'utf-8'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(bodyParser.json());
 app.use(cors());
+app.set('trust proxy', true);
 
 mongoose
   .connect(process.env.MONGO_URI, {
@@ -39,11 +40,6 @@ mongoose
       checkIp(req, res, next);
     }
   });
-
-  app.get('/', function (req, res) {
-    console.log(req.ip);
-    res.send();
-});
 
 app.use('/v1/personagens', personagemRoutes);
 app.use('/v1', routes);

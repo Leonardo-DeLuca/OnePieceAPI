@@ -3,9 +3,7 @@ const allowedIp = '172.20.208.1';  // Defina o IP permitido para as rotas POST, 
 
 // Middleware para verificar o IP da requisição
 const checkIp = (req, res, next) => {
-  const clientIp = req.ip;  // O IP do cliente
-
-  console.log(clientIp)
+  const clientIp = req.headers['x-forwarded-for'] || req.ip;
 
   if (clientIp === allowedIp) {
     return next();  // Se o IP for permitido, prossiga com a requisição
