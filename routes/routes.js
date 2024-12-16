@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
       // Para cada coleção, buscamos os dados
       for (const collection of collections) {
         let data;
-        if (collection.name !== 'CounterPersonagens' && collection.name !== 'CounterFrutas' && collection.name !== 'CounterIlhas') {
+        if (collection.name !== 'counterpersonagens' && collection.name !== 'counterfrutas' && collection.name !== 'counterilhas') {
           data = await mongoose.connection.db.collection(collection.name).find().toArray();
           
           if (collection.name === 'personagens') {
