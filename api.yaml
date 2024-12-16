@@ -309,7 +309,120 @@ paths:
 
             "404": # status code
                 description: Fruta não encontrada.
+  /ilhas:
+    get:
+        operationId: getIlhas
+        tags: 
+            - ilhas
+        summary: Retorna uma lista de todas as ilhas.
+        description: Lista de todas as ilhas disponíveis.
+        responses:
+            "200": # status code
+                description: Uma lista com todas as ilhas.
 
+            "500": # status code
+                description: Erro ao buscar ilhas.
+    post:
+        operationId: addIlhas
+        tags: 
+            - ilhas
+        summary: Adiciona uma nova ilha.
+        requestBody:
+            description: Deve ser enviado um modelo de ilha. Id não deve ser inserido.
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Ilha"
+                        
+        responses:        
+            "201": # status code
+                description: Ilha adicionada com sucesso.
+
+            "500": # status code
+                description: Erro ao adicionar ilha.
+  /ilhas/{identificador}:
+    parameters:
+        - name: identificador
+          in: path
+          description: identificador único da ilha.
+          required: true
+          schema:
+            type: string
+    get:
+      operationId: getIlhaByIdentificator
+      tags: 
+            - ilhas
+      summary: Retorna a ilha pelo identificador (Id ou Nome único).
+      description: Retorna uma ilha por um identificador podendo ser um id (1, 12, 47, ...) ou Nome (Hito Hito No Mi, ...).
+      responses:
+        "200": # status code
+          description: Ilha retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Ilha'
+                  - example:
+                      _id: 1
+        "500": # status code
+          description: Erro ao buscar ilha.
+          content:
+            application/json:
+              schema:
+                type: string
+        "404": # status code
+          description: Ilha não encontrada.
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      operationId: deleteIlhaById
+      tags: 
+            - ilhas
+      summary: Deleta a ilha pelo id.
+      description: Exclui a ilha pelo id e reorganiza os ids subsequentes. Apenas Ids numéricos.
+      responses:
+        "200": # status code
+          description: Ilha deletada e IDs subsequentes atualizados.
+          content:
+            application/json:
+              schema:
+                type: string
+        "404": # status code
+          description: Ilha não encontrada.
+          content:
+            application/json:
+              schema:
+                type: string
+        "500": # status code
+          description: Erro ao deletar ilha e atualizar IDs.
+          content:
+            application/json:
+              schema:
+                type: string 
+    put:
+        operationId: atualizaIlha
+        tags: 
+            - ilhas
+        summary: Atualizar uma ilha.
+        requestBody:
+          description: Atualiza uma ilha a partir do id.
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ilha"
+        responses:        
+            "200": # status code
+                description: Ilha atualizada com sucesso.
+
+            "500": # status code
+                description: Erro ao atualizar a ilha.
+
+            "404": # status code
+                description: Ilha não encontrada.
 components:
   schemas:
     Personagem:
@@ -398,6 +511,9 @@ components:
             tipo:
                 type: string
                 description: Tipo da fruta.
+            _id:
+                type: integer
+                description: ID único do personagem.
         required:
             - nome
             - descricao
@@ -408,3 +524,38 @@ components:
             significado: Fruta do humano (deus sol)
             tipo: Zoan Mítica
             descricao: Poderes de borracha sol kkkk
+    Ilha:
+        type: object
+        properties:
+            nome:
+                type: string
+                description: Nome da ilha.
+            regiao:
+                type: string
+                description: Localização da ilha.
+            descricao:
+                type: string
+                description: Descrção da ilha.
+            afiliada:
+                type: array
+                items:
+                  type: string
+                  description: Lista de afiliações.
+            populacao:
+                type: string
+                description: População da ilha.
+            _id:
+                type: integer
+                description: ID único do personagem.
+        required:
+            - nome
+            - regiao
+            - descricao
+        example:
+            nome: Fish Man Island
+            regiao: Grand Line
+            descricao: Ilha submersa dos homens peixe.
+            afiliada:
+              - Big mom pirates (old)
+              - Straw hat pirates
+            populacao: '100000'
