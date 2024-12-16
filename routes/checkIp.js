@@ -10,7 +10,7 @@ const checkIp = (req, res, next) => {
   if (clientIp === allowedIp) {
     return next();  // Se o IP for permitido, prossiga com a requisição
   } else {
-    return res.status(403).json({ message: 'Acesso proibido: IP não autorizado' });
+    return res.status(403).json({ message: `Acesso proibido: IP não autorizado ${clientIp}` });
   }
 };
 
