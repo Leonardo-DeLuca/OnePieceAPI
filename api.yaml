@@ -4,14 +4,22 @@ info:
   description: API em português da obra One Piece de Eiichiro Oda.
   version: 0.0.3
 servers:
+  - url: http://{local}:{port}/v1
+    variables:
+      local:
+        default: localhost
+      port:
+        default: '3000'
+    description: Máquina Local
   - url: https://{local}/v1
     variables:
       local:
         default: onepieceapi-b0ri.onrender.com
-    description: Máquina Local
+    description: API em Servidor
 paths:
   /:
     get:
+      security: []
       operationId: getAll
       summary: Retorna uma lista de todas as collections e seus dados.
       responses:
@@ -37,6 +45,7 @@ paths:
           type: string
         required: true
     get:
+      security: []
       operationId: searchTerm
       summary: Retorna uma lista de itensrelacionados com o termo buscado
       responses:
@@ -63,6 +72,7 @@ paths:
               
   /personagens:
     get:
+      security: []
       operationId: getPersonagens
       tags: 
         - personagens
@@ -91,6 +101,8 @@ paths:
               schema:
                 type: string
     post:
+      security:
+        - apiKeyAuth: []
       operationId: addPersonagem
       tags: 
         - personagens
@@ -112,6 +124,8 @@ paths:
 
           "500": # status code
               description: Erro ao adicionar personagem.
+          "403":
+              description: Chave da API faltante ou inválida.
   /personagens/{identificador}:
     parameters:
         - name: identificador
@@ -121,6 +135,7 @@ paths:
           schema:
             type: string
     get:
+      security: []
       operationId: getPersonagensByIdentificator
       tags: 
             - personagens
@@ -150,6 +165,8 @@ paths:
               schema:
                 type: string
     delete:
+      security:
+        - apiKeyAuth: []
       operationId: deletePersonagensById
       tags: 
             - personagens
@@ -173,8 +190,12 @@ paths:
           content:
             application/json:
               schema:
-                type: string 
+                type: string
+        "403":
+              description: Chave da API faltante ou inválida.
     put:
+        security:
+            - apiKeyAuth: []
         operationId: atualizaPersonagem
         tags: 
             - personagens
@@ -195,8 +216,12 @@ paths:
 
             "404": # status code
                 description: Personagem não encontrado.
+
+            "403":
+              description: Chave da API faltante ou inválida.
   /frutas:
     get:
+        security: []
         operationId: getFrutas
         tags: 
             - frutas
@@ -209,6 +234,8 @@ paths:
             "500": # status code
                 description: Erro ao buscar frutas.
     post:
+        security:
+            - apiKeyAuth: []
         operationId: addFrutas
         tags: 
             - frutas
@@ -227,6 +254,8 @@ paths:
 
             "500": # status code
                 description: Erro ao adicionar fruta.
+            "403":
+              description: Chave da API faltante ou inválida.
   /frutas/{identificador}:
     parameters:
         - name: identificador
@@ -236,6 +265,7 @@ paths:
           schema:
             type: string
     get:
+      security: []
       operationId: getFrutaByIdentificator
       tags: 
             - frutas
@@ -264,6 +294,8 @@ paths:
               schema:
                 type: string
     delete:
+      security:
+        - apiKeyAuth: []
       operationId: deleteFrutaById
       tags: 
             - frutas
@@ -287,8 +319,12 @@ paths:
           content:
             application/json:
               schema:
-                type: string 
+                type: string
+        "403":
+              description: Chave da API faltante ou inválida.
     put:
+        security:
+        - apiKeyAuth: []
         operationId: atualizaFruta
         tags: 
             - frutas
@@ -309,8 +345,12 @@ paths:
 
             "404": # status code
                 description: Fruta não encontrada.
+
+            "403":
+              description: Chave da API faltante ou inválida.
   /ilhas:
     get:
+        security: []
         operationId: getIlhas
         tags: 
             - ilhas
@@ -323,6 +363,8 @@ paths:
             "500": # status code
                 description: Erro ao buscar ilhas.
     post:
+        security:
+            - apiKeyAuth: []
         operationId: addIlhas
         tags: 
             - ilhas
@@ -341,6 +383,8 @@ paths:
 
             "500": # status code
                 description: Erro ao adicionar ilha.
+            "403":
+                description: Chave da API faltante ou inválida.
   /ilhas/{identificador}:
     parameters:
         - name: identificador
@@ -350,6 +394,7 @@ paths:
           schema:
             type: string
     get:
+      security: []
       operationId: getIlhaByIdentificator
       tags: 
             - ilhas
@@ -378,6 +423,8 @@ paths:
               schema:
                 type: string
     delete:
+      security:
+        - apiKeyAuth: []
       operationId: deleteIlhaById
       tags: 
             - ilhas
@@ -402,7 +449,11 @@ paths:
             application/json:
               schema:
                 type: string 
+        "403":
+              description: Chave da API faltante ou inválida.
     put:
+        security:
+            - apiKeyAuth: []
         operationId: atualizaIlha
         tags: 
             - ilhas
@@ -423,7 +474,15 @@ paths:
 
             "404": # status code
                 description: Ilha não encontrada.
+
+            "403":
+                description: Chave da API faltante ou inválida.
 components:
+  securitySchemes:
+    apiKeyAuth: # <-- arbitrary name for the security scheme
+      type: apiKey 
+      in: header
+      name: x-api-key
   schemas:
     Personagem:
         type: object
@@ -559,3 +618,6 @@ components:
               - Big mom pirates (old)
               - Straw hat pirates
             populacao: '100000'
+security:
+  - apiKeyAuth: []
+
